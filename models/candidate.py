@@ -1,4 +1,5 @@
 import builtins
+import json
 
 from sqlalchemy import *
 from sqlalchemy.schema import *
@@ -24,3 +25,10 @@ class Candidate(Base):
 
     def as_dict(self):
         return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
+
+
+    @validates('availability')
+    def validate_address(self, key, availability):
+        if availability:
+            assert json.loads(availability)
+        return availability
