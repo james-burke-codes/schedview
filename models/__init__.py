@@ -10,6 +10,5 @@ except AttributeError:
 	Base = declarative_base()
 
 from models.candidate import Candidate
-from models.mockdb import MockSqlAlchemy
 
-__all__ = [Candidate, MockSqlAlchemy]
+__all__ = [Candidate]
