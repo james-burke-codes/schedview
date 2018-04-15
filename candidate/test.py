@@ -61,6 +61,14 @@ class CandidateTestCase(unittest.TestCase):
             ):
            self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": null}')
 
+    def test_post_cadidate(self):
+
+        with boddle(
+            method='POST',
+            json={"name": "test2", "availability": None}
+            ):
+           self.assertEqual(service.post_candidate(db=self.db), '{"id": 1, "name": "test2", "availability": null}')
+
 
 
 if __name__ == '__main__':

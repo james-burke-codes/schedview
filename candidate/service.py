@@ -97,7 +97,7 @@ def post_candidate(db):
         logger.error(e)
         response.status = 400
         return e
-    return {"status": "success", "message": candidate.id}
+    return json.dumps(candidate.as_dict())
 
 
 
