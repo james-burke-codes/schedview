@@ -4,7 +4,10 @@ from sqlalchemy import *
 from sqlalchemy.schema import *
 from sqlalchemy.orm import *
 
-Base = builtins.base
+try:
+    Base = builtins.base
+except AttributeError:
+    from models import Base
 
 class Candidate(Base):
     __tablename__ = 'candidate'
