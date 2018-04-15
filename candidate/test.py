@@ -26,48 +26,46 @@ class CandidateTestCase(unittest.TestCase):
         Base.metadata.create_all(self.engine)
         self.db = Session()
 
+
     def tearDown(self):
         Base.metadata.drop_all(self.engine)
 
-    def test_index(self):
+
+    def test_success(self):
+
+        with self.subTest(name="index successful request empty"):
+            with boddle(method='GET'):
+               self.assertEqual(service.index(db=self.db), '[]')
 
         # add records
         self.db.add(Candidate(name='test1'))
         self.db.commit()
 
-        with boddle(method='GET'):
-           self.assertEqual(service.index(db=self.db), '[{"id": 1, "name": "test1", "availability": null}]')
+        with self.subTest(name="index successful request"):
+            with boddle(method='GET'):
+               self.assertEqual(service.index(db=self.db), '[{"id": 1, "name": "test1", "availability": null}]')
 
 
-    def test_get_cadidate(self):
-
-        # add records
-        self.db.add(Candidate(name='test1'))
-        self.db.commit()
-
-        with boddle(method='GET'):
-           self.assertEqual(service.get_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test1", "availability": null}')
+        with self.subTest(name="get successful request"):
+            with boddle(method='GET'):
+               self.assertEqual(service.get_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test1", "availability": null}')
 
 
-    def test_put_cadidate(self):
+        with self.subTest(name="put successful request"):
+            with boddle(
+                method='PUT',
+                json={"name": "test2", "availability": None}
+                ):
+               self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": null}')
 
-        # add records
-        self.db.add(Candidate(name='test1'))
-        self.db.commit()
 
-        with boddle(
-            method='PUT',
-            json={"name": "test2", "availability": None}
-            ):
-           self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": null}')
+        with self.subTest(name="post successful request"):
+            with boddle(
+                method='POST',
+                json={"name": "test2", "availability": None}
+                ):
+               self.assertEqual(service.post_candidate(db=self.db), '{"id": 2, "name": "test2", "availability": null}')
 
-    def test_post_cadidate(self):
-
-        with boddle(
-            method='POST',
-            json={"name": "test2", "availability": None}
-            ):
-           self.assertEqual(service.post_candidate(db=self.db), '{"id": 1, "name": "test2", "availability": null}')
 
 
 
