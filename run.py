@@ -16,8 +16,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 from bottle import Bottle
+from models import Base
 
-builtins.base = Base = declarative_base()
+#builtins.base = Base = declarative_base()
 
 # import config
 pathname = os.path.dirname(os.path.realpath(__file__))
@@ -35,7 +36,7 @@ app = application = Bottle()
 # reference db in builtins - shares in-memory sqlite across apps
 engine = create_engine(config["database"]["connection_string"], echo=True)
 builtins.bottle_sqlalchemy = bottle_sqlalchemy.Plugin(engine,
-                                                      builtins.base.metadata,
+                                                      Base.metadata,
                                                       keyword="db",
                                                       create=True,
                                                       commit=True)
@@ -43,7 +44,9 @@ app.install(builtins.bottle_sqlalchemy)
 
 # import apps
 from candidate.service import app as canApp
+from employee.service import app as empApp
 app.merge(canApp)
+app.merge(empApp)
 
 
 def alchemyencoder(self, obj):
@@ -59,6 +62,29 @@ def alchemyencoder(self, obj):
 
 builtins.alchemyencoder = alchemyencoder
 
+def init_models():
+    # reference models in builtins
+    import models
+
+    # create all tables defined in models
+    Base.metadata.create_all(engine)
+
+    # setup database session, just for creating dummy data
+    Session = sessionmaker()
+    Session.configure(bind=engine)
+    db = Session()
+    # init db
+
+    employees = [
+        models.Candidate(name='test1'),
+        models.Candidate(name='test2'),
+        models.Employee(name='test1', title='bob'),
+        models.Employee(name='test1', title='bob2'),
+    ]
+
+    for employee in employees:
+        db.add(employee)
+        db.commit()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -66,5 +92,7 @@ if __name__ == '__main__':
     parser.add_argument("-p", "--port", dest="port", type=int, default=8080, help="Port to listen on")
     parser.add_argument("-d", "--debug", dest="debug", type=bool, default=True, help="Enable Bottle debug mode")
     pargs = vars(parser.parse_args())
+
+    init_models()
 
     app.run(host=pargs["listen"], port=pargs["port"], debug=pargs["debug"], reloader=True)
