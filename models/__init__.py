@@ -1,8 +1,12 @@
 import builtins
+from sqlalchemy.ext.declarative import declarative_base
 
 import models
 builtins.models = models
 
-from models.candidate import Candidate
+Base = declarative_base()
 
-__all__ = [Candidate]
+from models.candidate import Candidate
+from models.mockdb import MockSqlAlchemy
+
+__all__ = [Candidate, MockSqlAlchemy]
