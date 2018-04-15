@@ -1,0 +1,7 @@
+boddle==0.2.8
+bottle==0.12.13
+bottle-sqlalchemy==0.4.3
+configobj==5.0.6
+python-dateutil==2.7.2
+six==1.11.0
+SQLAlchemy==1.2.6
