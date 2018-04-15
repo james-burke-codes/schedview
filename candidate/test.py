@@ -55,8 +55,11 @@ class CandidateTestCase(unittest.TestCase):
         self.db.add(Candidate(name='test1'))
         self.db.commit()
 
-        with boddle(method='PUT'):
-           self.assertEqual(service.get_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test1", "availability": null}')
+        with boddle(
+            method='PUT',
+            json={"name": "test2", "availability": None}
+            ):
+           self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": null}')
 
 
 
