@@ -14,7 +14,7 @@ class Candidate(Base):
     name = Column(String, nullable=False)
     availability = Column(String)
 
-    def __init__(self, name, availability=None):
+    def __init__(self, name, availability=json.dumps(dict())):
         self.name = name
         self.availability = availability
 
@@ -29,6 +29,7 @@ class Candidate(Base):
 
     @validates('availability')
     def validate_address(self, key, availability):
-        if availability:
+        if availability and json.loads(availability):
             assert json.loads(availability)
+            assert set(json.loads(availability).keys()).issubset(set(('mon', 'tue', 'wed', 'thur', 'fri')))
         return availability

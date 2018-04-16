@@ -52,21 +52,12 @@ class CandidateTestCase(unittest.TestCase):
 
 
         with self.subTest(name="put successful request"):
-            with boddle(
-                method='PUT',
-                json={
-                    "name": "test2",
-                    "availability": {'det': 'meow'}
-                }
-                ):
-               self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": "{\\"det\\": \\"meow\\"}"}')
+            with boddle(method='PUT', json={"name": "test2", "availability": {'mon': 'meow'}}):
+               self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": "{\\"mon\\": \\"meow\\"}"}')
 
 
         with self.subTest(name="post successful request"):
-            with boddle(
-                method='POST',
-                json={"name": "test2", "availability": {}}
-                ):
+            with boddle(method='POST', json={"name": "test2", "availability": {}}):
                self.assertEqual(service.post_candidate(db=self.db), '{"id": 2, "name": "test2", "availability": "{}"}')
 
 
