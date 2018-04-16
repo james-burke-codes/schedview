@@ -43,28 +43,31 @@ class CandidateTestCase(unittest.TestCase):
 
         with self.subTest(name="index successful request"):
             with boddle(method='GET'):
-               self.assertEqual(service.index(db=self.db), '[{"id": 1, "name": "test1", "availability": null}]')
+               self.assertEqual(service.index(db=self.db), '[{"id": 1, "name": "test1", "availability": "{}"}]')
 
 
         with self.subTest(name="get successful request"):
             with boddle(method='GET'):
-               self.assertEqual(service.get_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test1", "availability": null}')
+               self.assertEqual(service.get_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test1", "availability": "{}"}')
 
 
         with self.subTest(name="put successful request"):
             with boddle(
                 method='PUT',
-                json={"name": "test2", "availability": None}
+                json={
+                    "name": "test2",
+                    "availability": {'det': 'meow'}
+                }
                 ):
-               self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": null}')
+               self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": "{\\"det\\": \\"meow\\"}"}')
 
 
         with self.subTest(name="post successful request"):
             with boddle(
                 method='POST',
-                json={"name": "test2", "availability": None}
+                json={"name": "test2", "availability": {}}
                 ):
-               self.assertEqual(service.post_candidate(db=self.db), '{"id": 2, "name": "test2", "availability": null}')
+               self.assertEqual(service.post_candidate(db=self.db), '{"id": 2, "name": "test2", "availability": "{}"}')
 
 
 
