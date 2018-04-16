@@ -52,15 +52,27 @@ class CandidateTestCase(unittest.TestCase):
 
 
         with self.subTest(name="put successful request"):
-            with boddle(method='PUT', json={"name": "test2", "availability": {'mon': 'meow'}}):
-               self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": "{\\"mon\\": \\"meow\\"}"}')
+            with boddle(method='PUT', json={"name": "test2", "availability": {'mon': [9,18]}}):
+               self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), '{"id": 1, "name": "test2", "availability": "{\\"mon\\": [9, 18]}"}')
 
 
         with self.subTest(name="post successful request"):
             with boddle(method='POST', json={"name": "test2", "availability": {}}):
                self.assertEqual(service.post_candidate(db=self.db), '{"id": 2, "name": "test2", "availability": "{}"}')
 
+    def test_failure(self):
 
+        # add records
+        self.db.add(Candidate(name='test1'))
+        self.db.commit()
+
+        with self.subTest(name="put invalid content_type"):
+            with boddle(method='PUT'):
+               self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), 'invalid request, expected header-content_type: application/json')
+
+        with self.subTest(name="put invalid availability"):
+            with boddle(method='PUT', json={"name": "test2", "availability": {'ddd': 'meow'}}):
+               self.assertEqual(service.put_candidate(db=self.db, candidate_id=1), "Invalid day values, must be: 'mon', 'tue', 'wed', 'thur', 'fri'")
 
 
 if __name__ == '__main__':

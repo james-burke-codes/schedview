@@ -63,7 +63,7 @@ def put_candidate(db, candidate_id=None):
 
     if request.content_type != "application/json":
         response.status = 400
-        return {"status": "error", "message": "invalid request, expected header-content_type: application/json"}
+        return "invalid request, expected header-content_type: application/json"
 
     candidate = db.query(Candidate).filter(Candidate.id==candidate_id).first()
     try:
@@ -73,13 +73,18 @@ def put_candidate(db, candidate_id=None):
     except KeyError as e:
         logger.error(e)
         response.status = 400
-        return e
+        return
+    except AssertionError as e:
+        logger.error(e)
+        response.status = 400
+        return str(e)
     except sqlalchemy.exc.IntegrityError as e:
         logger.error(e)
         response.status = 400
         return e
 
     return json.dumps(candidate.as_dict())
+
 
 @app.route('/candidate', method=['OPTIONS', 'POST'])
 def post_candidate(db):
@@ -93,6 +98,10 @@ def post_candidate(db):
         candidate = Candidate(name=reqdata["name"], availability=json.dumps(reqdata["availability"]))
         db.add(candidate)
         db.commit()
+    except AssertionError as e:
+        logger.error(e)
+        response.status = 400
+        return e
     except sqlalchemy.exc.IntegrityError as e:
         logger.error(e)
         response.status = 400

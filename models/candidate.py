@@ -30,6 +30,9 @@ class Candidate(Base):
     @validates('availability')
     def validate_address(self, key, availability):
         if availability and json.loads(availability):
-            assert json.loads(availability)
-            assert set(json.loads(availability).keys()).issubset(set(('mon', 'tue', 'wed', 'thur', 'fri')))
+            assert json.loads(availability), "Invalid json type"
+            assert set(json.loads(availability).keys()).issubset(set(('mon', 'tue', 'wed', 'thur', 'fri'))), "Invalid day values, must be: 'mon', 'tue', 'wed', 'thur', 'fri'"
+
+            for k, v in json.loads(availability).items():
+                assert set(v).issubset(set(range(8, 19))), "Invalid time range, must be between: 9 and 17"
         return availability
