@@ -69,7 +69,6 @@ def put_job(db, job_id=None):
     job = db.query(Job).filter(Job.id==job_id).first()
     try:
         job.name = reqdata["name"]
-        job.availability = json.dumps(reqdata["availability"])
         db.commit()
         return json.dumps(job.as_dict())
     except KeyError as e:
@@ -99,7 +98,7 @@ def post_job(db):
         return "invalid request, expected header-content_type: application/json"
 
     try:
-        job = Job(name=reqdata["name"], availability=json.dumps(reqdata["availability"]))
+        job = Job(name=reqdata["name"])
         db.add(job)
         db.commit()
         return json.dumps(job.as_dict())
