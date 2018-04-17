@@ -1,7 +1,6 @@
 # schedview
 
-[![Build Status](https://travis-ci.org/peregrinius/schedview.svg?branch=master)](https://travis-ci.org/peregrinius/schedview)
-
+[![Build Status](https://travis-ci.org/peregrinius/schedview.svg?branch=master)](https://travis-ci.org/peregrinius/schedview) [![codecov](https://codecov.io/gh/peregrinius/schedview/branch/master/graph/badge.svg)](https://codecov.io/gh/peregrinius/schedview)
 Schedview is a web application for managing interview timeslots between candidates and employees
 
 
