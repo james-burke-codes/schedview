@@ -63,7 +63,8 @@ class JobTestCase(unittest.TestCase):
 
         with self.subTest(name="put invalid content_type"):
             with boddle(method='PUT'):
-               self.assertEqual(service.put_job(db=self.db, job_id=1), 'invalid request, expected header-content_type: application/json')
+                self.assertEqual(service.put_job(db=self.db, job_id=1),
+                    'invalid request, expected header-content_type: application/json')
 
 
 

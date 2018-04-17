@@ -44,6 +44,7 @@ except AttributeError:
 
 
 from models import Job, Interviewee, Interviewer
+from models import Employee, Candidate
 
 
 @app.route('/job', method=['OPTIONS', 'GET'])
@@ -114,7 +115,37 @@ def post_job(db):
     response.status = 400
     return "invalid request, could not locate Job with those details"
 
-    
+@app.route('/job/schedule/:job_id/:candidate_id', method=['OPTIONS', 'GET'])
+def get_attendee_availability(db, job_id, candidate_id):
+
+    interviewers = db.query(Interviewer).filter(Interviewer.job_id==job_id).all()
+    interviewee = db.query(Interviewee).filter(
+                          (Interviewee.job_id==job_id) &
+                          (Interviewee.candidate_id==candidate_id)
+                    ).first()
+
+    interviewee_availability = json.loads(interviewee.availability)
+
+    # compare days of the week between candidate and interviewers
+    matched_days = interviewee_availability.keys()
+    for interviewer in interviewers:
+        interviewer_availability = json.loads(interviewer.availability)
+        matched_days = set(matched_days).intersection(interviewer_availability.keys())
+        if not matched_days:
+            response.status = 400
+            return "no matches found for candidate and interviewers"
+
+    # compare timeslots on matched days of the week with candidate and interviewers
+    matched_timeslots = {}
+    for interviewer in interviewers:
+        interviewer_availability = json.loads(interviewer.availability)
+        for day in matched_days:
+            matched_timeslots[day] = list(set(interviewee_availability[day]).intersection(interviewer_availability[day]))
+            if not matched_timeslots[day]:
+                response.status = 400
+                return "no matches found for candidate and interviewers"
+
+    return json.dumps(matched_timeslots)
 
 
 
