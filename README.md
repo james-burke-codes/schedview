@@ -1,5 +1,8 @@
 # schedview
 
+Schedview is a web application for managing interview timeslots between candidates and employees
+
+
 ## Installation
 
 ```
@@ -12,8 +15,42 @@ source venv/bin/activate
 pip install requirements.txt
 ```
 
+## Testing
+
+```
+pytest
+
+```
+
 ## Running
 
 ```
 python run.py
 ```
+
+## Development
+
+Schedview is built using the Bottle Python Web Framework, each application is separate and can be run independently, while also being able to run together using the `python run.py` command.
+
+
+## Data Model
+
+There is a many to many relationship between a candidate and a job and between an employee and a job. This means that a candidate can apply for many jobs and an employee can interview many candidates and many employees can interview the same candidate.
+
+```
++-----------+        +-----+        +-----------+
+|INTERVIEWEE+^-------+ JOB +-------^+INTERVIEWER|
++-----+-----+        +-----+        +-----+-----+
+      ^                                   ^
+      |                                   |
++-----+----+                         +----+----+
+|CANDIDATE |                         |EMPLOYEE |
++----------+                         +---------+
+```
+
+
+## To Do
+
+- Create constraint on Interviewee table to prevent a candidate from applying for the same job multiple times.
+- Add more tests to check failures e.g. sending candidate_id to employee get
+- Use environment variables instead of config files
