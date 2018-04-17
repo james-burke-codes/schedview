@@ -4,26 +4,27 @@ import sys
 import unittest
 from unittest.mock import patch
 from boddle import boddle
-
 import logging
-import service
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../')
+
+import employee_service as service
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../')
-
 import models
 from models import Base, Job, Employee
 
-class CandidateTestCase(unittest.TestCase):
+class EmployeeTestCase(unittest.TestCase):
 
     def setUp(self):
         service.builtins.alchemyencoder = lambda x: None
 
         Session = sessionmaker()
-        self.engine = create_engine("sqlite:///:memory:", echo=True)
+        self.engine = create_engine("sqlite:///:memory:", echo=False)
         Session.configure(bind=self.engine)
         Base.metadata.create_all(self.engine)
         self.db = Session()

@@ -5,17 +5,20 @@ import json
 import unittest
 from unittest.mock import patch
 from boddle import boddle
-
 import logging
-from candidate import service as candidate
-from employee import service as employee
-from job import service as job
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+from candidate import candidate_service as candidate
+from employee import employee_service as employee
+from job import job_service as job
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 from models import Base
+
 
 class FunctionalTestCase(unittest.TestCase):
 
@@ -79,8 +82,8 @@ class FunctionalTestCase(unittest.TestCase):
         ## add get match of employee and candidate avialability times
         with self.subTest(name="get availability of interview participants"):
             with boddle(method='GET'):
-                self.assertEqual(job.get_attendee_availability(db=self.db, job_id=job_record['id'], candidate_id=candidate_record['id']),
-                    '{"tue": [9], "mon": [16, 9]}')
+                result = job.get_attendee_availability(db=self.db, job_id=job_record['id'], candidate_id=candidate_record['id'])
+                self.assertEqual(json.loads(result), {"tue": [9], "mon": [16, 9]})
 
 
 
