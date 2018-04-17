@@ -68,7 +68,6 @@ def put_candidate(db, candidate_id=None):
     candidate = db.query(Candidate).filter(Candidate.id==candidate_id).first()
     try:
         candidate.name = reqdata["name"]
-        candidate.availability = json.dumps(reqdata["availability"])
         db.commit()
     except KeyError as e:
         logger.error(e)
@@ -95,7 +94,7 @@ def post_candidate(db):
         return {"status": "error", "message": "invalid request, expected header-content_type: application/json"}
 
     try:
-        candidate = Candidate(name=reqdata["name"], availability=json.dumps(reqdata["availability"]))
+        candidate = Candidate(name=reqdata["name"])
         db.add(candidate)
         db.commit()
     except AssertionError as e:
