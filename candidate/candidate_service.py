@@ -135,7 +135,6 @@ def post_candidate_availability(db):
                                   availability=json.dumps(reqdata["availability"]))
         db.add(interviewee)
         db.commit()
-        return json.dumps(interviewee.as_dict())
     except AssertionError as e:
         logger.error(e)
         response.status = 400
@@ -145,8 +144,7 @@ def post_candidate_availability(db):
         response.status = 400
         return e
 
-    response.status = 400
-    return "invalid request, could not locate Interviewee with those details"
+    return json.dumps(interviewee.as_dict())
 
 
 
