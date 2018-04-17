@@ -62,7 +62,7 @@ def put_employee(db, employee_id=None):
 
     if request.content_type != "application/json":
         response.status = 400
-        return {"status": "error", "message": "invalid request, expected header-content_type: application/json"}
+        return "invalid request, expected header-content_type: application/json"
 
     employee = db.query(Employee).filter(Employee.id==employee_id).first()
     try:
@@ -86,7 +86,7 @@ def post_employee(db):
 
     if request.content_type != "application/json":
         response.status = 400
-        return {"status": "error", "message": "invalid request, expected header-content_type: application/json"}
+        return "invalid request, expected header-content_type: application/json"
 
     try:
         employee = Employee(**reqdata)

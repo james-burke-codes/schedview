@@ -42,7 +42,7 @@ except AttributeError:
     sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/..')
 
 
-from models import Candidate
+from models import Candidate, Interviewee
 
 
 @app.route('/candidate', method=['OPTIONS', 'GET'])
@@ -91,10 +91,10 @@ def post_candidate(db):
 
     if request.content_type != "application/json":
         response.status = 400
-        return {"status": "error", "message": "invalid request, expected header-content_type: application/json"}
+        return "invalid request, expected header-content_type: application/json"
 
     try:
-        candidate = Candidate(name=reqdata["name"])
+        candidate = Candidate(**reqdata)
         db.add(candidate)
         db.commit()
     except AssertionError as e:
@@ -106,6 +106,29 @@ def post_candidate(db):
         response.status = 400
         return e
     return json.dumps(candidate.as_dict())
+
+
+@app.route('/candidate/availability', method=['OPTIONS', 'POST'])
+def post_candidate_availability(db):
+    reqdata = request.json
+
+    if request.content_type != "application/json":
+        response.status = 400
+        return "invalid request, expected header-content_type: application/json"
+
+    try:
+        interviewee = Interviewee(**reqdata)
+        db.add(interviewee)
+        db.commit()
+    except AssertionError as e:
+        logger.error(e)
+        response.status = 400
+        return e
+    except sqlalchemy.exc.IntegrityError as e:
+        logger.error(e)
+        response.status = 400
+        return e
+    return json.dumps(interviewee.as_dict())
 
 
 

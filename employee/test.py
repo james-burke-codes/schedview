@@ -37,35 +37,37 @@ class CandidateTestCase(unittest.TestCase):
             with boddle(method='GET'):
                self.assertEqual(service.index(db=self.db), '[]')
 
-        # add records
-        self.db.add(Employee(name='test1', title='bob'))
-        self.db.commit()
+        with self.subTest(name="post successful request"):
+            with boddle(method='POST', json={"name": "test1", "title": "test1"}):
+               self.assertEqual(service.post_employee(db=self.db), '{"id": 1, "name": "test1", "title": "test1"}')
+
 
         with self.subTest(name="index successful request"):
             with boddle(method='GET'):
-               self.assertEqual(service.index(db=self.db), '[{"id": 1, "name": "test1", "title": "bob"}]')
+               self.assertEqual(service.index(db=self.db), '[{"id": 1, "name": "test1", "title": "test1"}]')
 
 
         with self.subTest(name="get successful request"):
             with boddle(method='GET'):
-               self.assertEqual(service.get_employee(db=self.db, employee_id=1), '{"id": 1, "name": "test1", "title": "bob"}')
+               self.assertEqual(service.get_employee(db=self.db, employee_id=1), '{"id": 1, "name": "test1", "title": "test1"}')
 
 
         with self.subTest(name="put successful request"):
-            with boddle(
-                method='PUT',
-                json={"name": "test2", "title": "bob2"}
-                ):
-               self.assertEqual(service.put_employee(db=self.db, employee_id=1), '{"id": 1, "name": "test2", "title": "bob2"}')
+            with boddle(method='PUT', json={"name": "test2", "title": "test2"}):
+               self.assertEqual(service.put_employee(db=self.db, employee_id=1), '{"id": 1, "name": "test2", "title": "test2"}')
 
 
+    def test_failure(self):
+
+        # add records
         with self.subTest(name="post successful request"):
-            with boddle(
-                method='POST',
-                json={"name": "test2", "title": "bob"}
-                ):
-               self.assertEqual(service.post_employee(db=self.db), '{"id": 2, "name": "test2", "title": "bob"}')
+            with boddle(method='POST', json={"name": "test1", "title": "test1"}):
+               self.assertEqual(service.post_employee(db=self.db), '{"id": 1, "name": "test1", "title": "test1"}')
 
+
+        with self.subTest(name="put invalid content_type"):
+            with boddle(method='PUT'):
+               self.assertEqual(service.put_employee(db=self.db, employee_id=1), 'invalid request, expected header-content_type: application/json')
 
 
 
