@@ -68,7 +68,6 @@ def put_employee(db, employee_id=None):
     try:
         employee.name = reqdata["name"]
         employee.title = reqdata["title"]
-        employee.availability = reqdata["availability"]
         db.commit()
     except KeyError as e:
         logger.error(e)

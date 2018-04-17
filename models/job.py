@@ -1,20 +1,19 @@
+import json
+
 from sqlalchemy import *
 from sqlalchemy.schema import *
 from sqlalchemy.orm import *
 
 from models import Base
 
-class Employee(Base):
-    __tablename__ = 'employee'
+class Job(Base):
+    __tablename__ = 'job'
 
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
-    title = Column(String, nullable=False)
 
-
-    def __init__(self, name, title):
+    def __init__(self, name):
         self.name = name
-        self.title = title
 
 
     def __unicode__(self):
