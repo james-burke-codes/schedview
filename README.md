@@ -55,4 +55,3 @@ There is a many to many relationship between a candidate and a job and between a
 
 - Create constraint on Interviewee table to prevent a candidate from applying for the same job multiple times.
 - Add more tests to check failures e.g. sending candidate_id to employee get
-- Use environment variables instead of config files
