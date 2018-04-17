@@ -138,7 +138,6 @@ def post_employee_availability(db):
         return "invalid request, expected header-content_type: application/json"
 
     try:
-        # name=reqdata["name"], availability=json.dumps(reqdata["availability"])
         interviewer = Interviewer(job_id=reqdata["job_id"],
                                   employee_id=reqdata["employee_id"],
                                   availability=json.dumps(reqdata["availability"]))

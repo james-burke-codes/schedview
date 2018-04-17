@@ -83,12 +83,10 @@ class CandidateTestCase(unittest.TestCase):
 
     def test_failure(self):
 
-        # add records
-        with self.subTest(name="post successful request"):
-            with boddle(method='POST', json={"name": "test1", "title": "test1"}):
-                self.assertEqual(service.post_employee(db=self.db),
-                    '{"id": 1, "name": "test1", "title": "test1"}')
-
+        # add Employee record
+        employee = Employee(name='test1', title='test2')
+        self.db.add(employee)
+        self.db.commit()
 
         with self.subTest(name="put invalid content_type"):
             with boddle(method='PUT'):
@@ -99,10 +97,6 @@ class CandidateTestCase(unittest.TestCase):
         # add Job record
         job = Job(name='test1')
         self.db.add(job)
-        # add Employee record
-        employee = Employee(name='test1', title='test2')
-        self.db.add(employee)
-        self.db.commit()
 
         with self.subTest(name="put invalid availability"):
             with boddle(method='PUT', json={"job_id": job.id, "employee_id": employee.id, "availability": {'ddd': [9,10]}}):

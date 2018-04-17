@@ -108,6 +108,35 @@ def post_candidate(db):
     return json.dumps(candidate.as_dict())
 
 
+@app.route('/candidate/availability', method=['OPTIONS', 'PUT'])
+def put_candidate_availability(db):
+    reqdata = request.json
+
+    if request.content_type != "application/json":
+        response.status = 400
+        return "invalid request, expected header-content_type: application/json"
+
+    interviewee = db.query(Interviewee).filter(
+        (Interviewee.job_id==reqdata["job_id"]) &
+        (Interviewee.candidate_id==reqdata["candidate_id"])
+        ).first()
+    try:
+        interviewee.availability=json.dumps(reqdata["availability"])
+        db.commit()
+        return json.dumps(interviewee.as_dict())
+    except AssertionError as e:
+        logger.error(e)
+        response.status = 400
+        return str(e)
+    except sqlalchemy.exc.IntegrityError as e:
+        logger.error(e)
+        response.status = 400
+        return e
+
+    response.status = 400
+    return "invalid request, could not locate Interviewee with those details"
+
+
 @app.route('/candidate/availability', method=['OPTIONS', 'POST'])
 def post_candidate_availability(db):
     reqdata = request.json
@@ -117,18 +146,23 @@ def post_candidate_availability(db):
         return "invalid request, expected header-content_type: application/json"
 
     try:
-        interviewee = Interviewee(**reqdata)
+        interviewee = Interviewee(job_id=reqdata["job_id"],
+                                  candidate_id=reqdata["candidate_id"],
+                                  availability=json.dumps(reqdata["availability"]))
         db.add(interviewee)
         db.commit()
+        return json.dumps(interviewee.as_dict())
     except AssertionError as e:
         logger.error(e)
         response.status = 400
-        return e
+        return str(e)
     except sqlalchemy.exc.IntegrityError as e:
         logger.error(e)
         response.status = 400
         return e
-    return json.dumps(interviewee.as_dict())
+
+    response.status = 400
+    return "invalid request, could not locate Interviewee with those details"
 
 
 
