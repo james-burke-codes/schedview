@@ -6,9 +6,6 @@ import json
 import logging
 import argparse
 
-from configobj import ConfigObj
-from validate import Validator
-
 # SQLAlchemy
 from bottle.ext import sqlalchemy as bottle_sqlalchemy
 from sqlalchemy import create_engine
