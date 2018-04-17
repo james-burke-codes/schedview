@@ -62,21 +62,25 @@ class FunctionalTestCase(unittest.TestCase):
             job_record = json.loads(job.index(db=self.db))[0]
 
         ## add availability for candidate
-        with boddle(method='POST', json={"job_id": job_record['id'], "candidate_id": candidate_record['id'], "availability": {'mon': [9,16]}}):
+        with boddle(method='POST', json={"job_id": job_record['id'],
+                                         "candidate_id": candidate_record['id'],
+                                         "availability": {'mon': [9,16], 'tue': [9, 16], 'wed': [10]}}):
             self.assertEqual(candidate.post_candidate_availability(db=self.db),
-                '{"job_id": 1, "candidate_id": 1, "availability": "{\\"mon\\": [9, 16]}"}')
+                '{"job_id": 1, "candidate_id": 1, "availability": "{\\"mon\\": [9, 16], \\"tue\\": [9, 16], \\"wed\\": [10]}"}')
 
         ## add availability for employee
-        with boddle(method='POST', json={"job_id": job_record['id'], "employee_id": employee_record['id'], "availability": {'mon': [9,16]}}):
+        with boddle(method='POST', json={"job_id": job_record['id'],
+                                         "employee_id": employee_record['id'],
+                                         "availability": {'mon': [9,16], 'tue': [9]}}):
             self.assertEqual(employee.post_employee_availability(db=self.db),
-                '{"job_id": 1, "employee_id": 1, "availability": "{\\"mon\\": [9, 16]}"}')
+                '{"job_id": 1, "employee_id": 1, "availability": "{\\"mon\\": [9, 16], \\"tue\\": [9]}"}')
 
 
         ## add get match of employee and candidate avialability times
         with self.subTest(name="get availability of interview participants"):
             with boddle(method='GET'):
-                self.assertEqual(job.get_attendee_availability(db=self.db),
-                    '{"availability": "{\\"mon\\": [9, 16]}"}')
+                self.assertEqual(job.get_attendee_availability(db=self.db, job_id=job_record['id'], candidate_id=candidate_record['id']),
+                    '{"tue": [9], "mon": [16, 9]}')
 
 
 
