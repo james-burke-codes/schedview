@@ -41,7 +41,7 @@ except AttributeError:
 
     sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/..')
 
-from models import Employee
+from models import Employee, Interviewer
 
 
 @app.route('/employee', method=['OPTIONS', 'GET'])
@@ -80,6 +80,7 @@ def put_employee(db, employee_id=None):
 
     return json.dumps(employee.as_dict())
 
+
 @app.route('/employee', method=['OPTIONS', 'POST'])
 def post_employee(db):
     reqdata = request.json
@@ -97,6 +98,64 @@ def post_employee(db):
         response.status = 400
         return e
     return json.dumps(employee.as_dict())
+
+
+@app.route('/employee/availability', method=['OPTIONS', 'PUT'])
+def put_employee_availability(db):
+    reqdata = request.json
+
+    if request.content_type != "application/json":
+        response.status = 400
+        return "invalid request, expected header-content_type: application/json"
+
+    interviewer = db.query(Interviewer).filter(
+        (Interviewer.job_id==reqdata["job_id"]) &
+        (Interviewer.employee_id==reqdata["employee_id"])
+        ).first()
+    try:
+        interviewer.availability=json.dumps(reqdata["availability"])
+        db.commit()
+        return json.dumps(interviewer.as_dict())
+    except AssertionError as e:
+        logger.error(e)
+        response.status = 400
+        return str(e)
+    except sqlalchemy.exc.IntegrityError as e:
+        logger.error(e)
+        response.status = 400
+        return e
+
+    response.status = 400
+    return "invalid request, could not locate Interviewer with those details"
+
+
+@app.route('/employee/availability', method=['OPTIONS', 'POST'])
+def post_employee_availability(db):
+    reqdata = request.json
+
+    if request.content_type != "application/json":
+        response.status = 400
+        return "invalid request, expected header-content_type: application/json"
+
+    try:
+        # name=reqdata["name"], availability=json.dumps(reqdata["availability"])
+        interviewer = Interviewer(job_id=reqdata["job_id"],
+                                  employee_id=reqdata["employee_id"],
+                                  availability=json.dumps(reqdata["availability"]))
+        db.add(interviewer)
+        db.commit()
+        return json.dumps(interviewer.as_dict())
+    except AssertionError as e:
+        logger.error(e)
+        response.status = 400
+        return str(e)
+    except sqlalchemy.exc.IntegrityError as e:
+        logger.error(e)
+        response.status = 400
+        return e
+
+    response.status = 400
+    return "invalid request, could not locate Interviewer with those details"
 
 
 
