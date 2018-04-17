@@ -88,28 +88,46 @@ class CandidateTestCase(unittest.TestCase):
         self.db.add(candidate)
         self.db.commit()
 
-        with self.subTest(name="put invalid content_type"):
+        with self.subTest(name="put invalid content_type for put_candidate"):
             with boddle(method='PUT'):
                 self.assertEqual(service.put_candidate(db=self.db, candidate_id=1),
                     'invalid request, expected header-content_type: application/json')
 
 
-        with self.subTest(name="post invalid content_type"):
+        with self.subTest(name="post invalid content_type for post_candidate"):
             with boddle(method='POST'):
                 self.assertEqual(service.post_candidate(db=self.db),
                     'invalid request, expected header-content_type: application/json')
+
+
+        with self.subTest(name="post invalid content_type for post_candidate_availability"):
+            with boddle(method='POST'):
+                self.assertEqual(service.post_candidate_availability(db=self.db),
+                    'invalid request, expected header-content_type: application/json')
+
+
+        with self.subTest(name="put invalid content_type for put_candidate_availability"):
+            with boddle(method='PUT'):
+                self.assertEqual(service.put_candidate_availability(db=self.db),
+                    'invalid request, expected header-content_type: application/json')
+
+
+        with self.subTest(name="put invalid request with wrong payload data"):
+            with boddle(method='PUT', json={"name1": "test2"}):
+                self.assertEqual(service.put_candidate(db=self.db, candidate_id=1),
+                    "invalid request, no value for 'name' given")
 
 
         # add Job record
         job = Job(name='test1')
         self.db.add(job)
 
-        with self.subTest(name="put invalid availability"):
+        with self.subTest(name="put invalid availability wrong day of the week"):
             with boddle(method='PUT', json={"job_id": job.id, "candidate_id": candidate.id, "availability": {'ddd': [9,10]}}):
                 self.assertEqual(service.post_candidate_availability(db=self.db),
                     "Invalid day values, must be: 'mon', 'tue', 'wed', 'thur', 'fri'")
 
-        with self.subTest(name="put invalid availability"):
+        with self.subTest(name="put invalid availability wrong hours"):
             with boddle(method='PUT', json={"job_id": job.id, "candidate_id": candidate.id, "availability": {'tue': [6,10]}}):
                 self.assertEqual(service.post_candidate_availability(db=self.db),
                     "Invalid time range, must be between: 9 and 17")

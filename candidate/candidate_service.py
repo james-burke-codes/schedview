@@ -64,15 +64,11 @@ def put_candidate(db, candidate_id=None):
     except KeyError as e:
         logger.error(e)
         response.status = 400
-        return
-    except AssertionError as e:
-        logger.error(e)
-        response.status = 400
-        return str(e)
+        return "invalid request, no value for %s given" % e
     except sqlalchemy.exc.IntegrityError as e:
         logger.error(e)
         response.status = 400
-        return e
+        return str(e)
 
     return json.dumps(candidate.as_dict())
 
@@ -89,10 +85,6 @@ def post_candidate(db):
         candidate = Candidate(**reqdata)
         db.add(candidate)
         db.commit()
-    except AssertionError as e:
-        logger.error(e)
-        response.status = 400
-        return e
     except sqlalchemy.exc.IntegrityError as e:
         logger.error(e)
         response.status = 400
