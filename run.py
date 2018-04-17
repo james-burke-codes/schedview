@@ -20,21 +20,15 @@ from models import Base
 
 #builtins.base = Base = declarative_base()
 
-# import config
-pathname = os.path.dirname(os.path.realpath(__file__))
-configname = os.path.join(pathname, "config")
-config = ConfigObj(configname+".conf", configspec=configname+".spec", interpolation=False)
-config.validate(Validator())
-
 # setup logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(format=config["logging"]["format"],
-                    level=config["logging"]["level"])
+logging.basicConfig(format=os.environ.get('SV_LOGGING_FORMAT'),
+                    level=os.environ.get('SV_LOGGING_LEVEL'))
 
 app = application = Bottle()
 
 # reference db in builtins - shares in-memory sqlite across apps
-engine = create_engine(config["database"]["connection_string"], echo=True)
+engine = create_engine(os.environ.get('SV_DB_CONNECTION'), echo=True)
 builtins.bottle_sqlalchemy = bottle_sqlalchemy.Plugin(engine,
                                                       Base.metadata,
                                                       keyword="db",

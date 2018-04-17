@@ -26,17 +26,11 @@ app = application = Bottle()
 try:
     app.install(builtins.bottle_sqlalchemy)
 except AttributeError:
-    # import config
-    pathname = os.path.dirname(os.path.realpath(__file__))
-    configname = os.path.join(pathname, "config")
-    config = ConfigObj(configname+".conf", configspec=configname+".spec", interpolation=False)
-    config.validate(Validator())
-
     # setup logging
-    logging.basicConfig(format=config["logging"]["format"],
-                        level=config["logging"]["level"])
+    logging.basicConfig(format=os.environ.get('SV_LOGGING_FORMAT'),
+                        level=os.environ.get('SV_LOGGING_LEVEL'))
     # handle standalone service
-    engine = create_engine(config["database"]["connection_string"], echo=True)
+    engine = create_engine(os.environ.get('SV_DB_CONNECTION'), echo=False)
     sqla_plugin = bottle_sqlalchemy.Plugin(engine, keyword="db")
     app.install(sqla_plugin)
 
