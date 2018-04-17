@@ -17,6 +17,17 @@ source venv/bin/activate
 pip install requirements.txt
 ```
 
+## Setting Environment Variables
+
+The following environment variables are required to run the service
+
+```
+export SV_DB_CONNECTION="sqlite:///:memory:"
+export SV_LOGGING_FORMAT="%(asctime)s:%(name)s:L%(lineno)s:%(levelname)s - %(message)s"
+export SV_LOGGING_LEVEL="DEBUG"
+
+```
+
 ## Testing
 
 ```
@@ -54,4 +65,4 @@ There is a many to many relationship between a candidate and a job and between a
 ## To Do
 
 - Create constraint on Interviewee table to prevent a candidate from applying for the same job multiple times.
-- Add more tests to check failures e.g. sending candidate_id to employee get
+- Improve test coverage - add more tests to check failures e.g. sending candidate_id to employee get
