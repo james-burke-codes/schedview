@@ -1,4 +1,16 @@
 from sqlalchemy.ext.declarative import declarative_base
+import datetime
+
+def alchemyencoder(self, obj):
+    """JSON encoder function for SQLAlchemy special classes."""
+    if isinstance(obj, datetime.date):
+        try:
+            utcoffset = obj.utcoffset() or datetime.timedelta(0)
+            return (obj - utcoffset).strftime('%Y-%m-%d %H:%M:%S')
+        except AttributeError:
+            return obj.strftime('%Y-%m-%d')
+    elif isinstance(obj, decimal.Decimal):
+        return float(obj)
 
 Base = declarative_base()
 

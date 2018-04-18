@@ -34,14 +34,16 @@ except AttributeError:
     sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/..')
 
 
+import models
 from models import Job, Interviewee, Interviewer
 from models import Employee, Candidate
+
 
 
 @app.route('/job', method=['OPTIONS', 'GET'])
 def index(db):
     job = db.query(Job).all()
-    return json.dumps([r.as_dict() for r in job], default=builtins.alchemyencoder)
+    return json.dumps([r.as_dict() for r in job], default=models.alchemyencoder)
 
 
 @app.route('/job/:job_id', method=['OPTIONS', 'GET'])

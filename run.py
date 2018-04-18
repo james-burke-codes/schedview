@@ -42,19 +42,6 @@ app.merge(empApp)
 app.merge(jobApp)
 
 
-def alchemyencoder(self, obj):
-    """JSON encoder function for SQLAlchemy special classes."""
-    if isinstance(obj, datetime.date):
-        try:
-            utcoffset = obj.utcoffset() or datetime.timedelta(0)
-            return (obj - utcoffset).strftime('%Y-%m-%d %H:%M:%S')
-        except AttributeError:
-            return obj.strftime('%Y-%m-%d')
-    elif isinstance(obj, decimal.Decimal):
-        return float(obj)
-
-builtins.alchemyencoder = alchemyencoder
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", "--listen", dest="listen", type=str, default="localhost", help="IP Address to listen on")
