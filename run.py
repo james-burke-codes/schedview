@@ -34,10 +34,12 @@ builtins.bottle_sqlalchemy = bottle_sqlalchemy.Plugin(engine,
 app.install(builtins.bottle_sqlalchemy)
 
 # import apps
-from candidate.service import app as canApp
-from employee.service import app as empApp
+from candidate.candidate_service import app as canApp
+from employee.employee_service import app as empApp
+from job.job_service import app as jobApp
 app.merge(canApp)
 app.merge(empApp)
+app.merge(jobApp)
 
 
 def alchemyencoder(self, obj):
