@@ -55,37 +55,11 @@ def alchemyencoder(self, obj):
 
 builtins.alchemyencoder = alchemyencoder
 
-def init_models():
-    # reference models in builtins
-    import models
-
-    # create all tables defined in models
-    Base.metadata.create_all(engine)
-
-    # setup database session, just for creating dummy data
-    Session = sessionmaker()
-    Session.configure(bind=engine)
-    db = Session()
-    # init db
-
-    employees = [
-        models.Candidate(name='test1'),
-        models.Candidate(name='test2'),
-        models.Employee(name='test1', title='bob'),
-        models.Employee(name='test1', title='bob2'),
-    ]
-
-    for employee in employees:
-        db.add(employee)
-        db.commit()
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", "--listen", dest="listen", type=str, default="localhost", help="IP Address to listen on")
     parser.add_argument("-p", "--port", dest="port", type=int, default=8080, help="Port to listen on")
     parser.add_argument("-d", "--debug", dest="debug", type=bool, default=True, help="Enable Bottle debug mode")
     pargs = vars(parser.parse_args())
-
-    init_models()
 
     app.run(host=pargs["listen"], port=pargs["port"], debug=pargs["debug"], reloader=True)
