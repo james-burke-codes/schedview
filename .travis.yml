@@ -6,5 +6,4 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
-  - codecov -t f7f499ad-ef65-4f8a-9015-3f5de38cc437
   - py.test
