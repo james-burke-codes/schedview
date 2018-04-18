@@ -66,3 +66,4 @@ There is a many to many relationship between a candidate and a job and between a
 
 - Create constraint on Interviewee table to prevent a candidate from applying for the same job multiple times.
 - Improve test coverage - add more tests to check failures e.g. sending candidate_id to employee get
+- add deployment process (uWSGI, Zappa)
