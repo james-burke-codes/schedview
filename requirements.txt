@@ -4,3 +4,5 @@ bottle-sqlalchemy==0.4.3
 python-dateutil==2.7.2
 six==1.11.0
 SQLAlchemy==1.2.6
+codecov==2.0.15
+pytest-cov==2.5.1
