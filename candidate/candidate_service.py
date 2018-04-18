@@ -146,14 +146,3 @@ def post_candidate_availability(db):
 
     return json.dumps(interviewee.as_dict())
 
-
-
-if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--listen", dest="listen", type=str, default="localhost", help="IP Address to listen on")
-    parser.add_argument("-p", "--port", dest="port", type=int, default=8080, help="Port to listen on")
-    parser.add_argument("-d", "--debug", dest="bottleDebug", action="store_true", help="Enable Bottle debug mode")
-    parser.set_defaults(bottleDebug=True)
-    pargs = vars(parser.parse_args())
-    app.run(host=pargs["listen"], port=pargs["port"], debug=pargs["bottleDebug"], reloader=True)
